@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Card.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CardMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Player.cs">
       <SubType>Component</SubType>
     </Compile>

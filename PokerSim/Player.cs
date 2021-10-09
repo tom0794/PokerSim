@@ -10,8 +10,8 @@ namespace PokerSim
 {
     class Player : GroupBox
     {
-        public PictureBox picCard1 { get; set; }
-        public PictureBox picCard2 { get; set; }
+        public Card PlayerCard1 { get; set; }
+        public Card PlayerCard2 { get; set; }
 
         public Button btnRemovePlayer { get; set; }
 
@@ -27,6 +27,13 @@ namespace PokerSim
 
         public PokerSimForm Form { get; set; }
 
+        /// <summary>
+        /// Create all Player object controls.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="left"></param>
+        /// <param name="top"></param>
+        /// <param name="form"></param>
         public Player(string player, int left, int top, PokerSimForm form)
         {
             Active = false;
@@ -37,37 +44,37 @@ namespace PokerSim
             this.Width = 190;
             this.Height = 122;
 
-            picCard1 = new PictureBox();
-            picCard2 = new PictureBox();
-            picCard1.Image = PokerSim.Properties.Resources.red_back;
-            picCard1.SizeMode = PictureBoxSizeMode.StretchImage;
-            picCard1.Visible = false;
-            picCard1.Height = 105;
-            picCard1.Width = 69;
-            picCard1.Top = 50;
-            picCard1.Left = 6;
-            //picCard1.Click += this.Form.pictureBox1_Click;
+            PlayerCard1 = new Card();
+            PlayerCard2 = new Card();
+            PlayerCard1.Image = this.Form.cardBack;
+            PlayerCard1.SizeMode = PictureBoxSizeMode.StretchImage;
+            PlayerCard1.Visible = false;
+            PlayerCard1.Height = 106;
+            PlayerCard1.Width = 69;
+            PlayerCard1.Top = 50;
+            PlayerCard1.Left = 6;
+            PlayerCard1.Click += this.Form.PlayerCard1_Click;
 
-            picCard2.Image = PokerSim.Properties.Resources.red_back;
-            picCard2.SizeMode = PictureBoxSizeMode.StretchImage;
-            picCard2.Visible = false;
-            picCard2.Height = 105;
-            picCard2.Width = 69;
-            picCard2.Top = 50;
-            picCard2.Left = 81;
-            //picCard2.Click += this.Form.pictureBox1_Click;
+            PlayerCard2.Image = this.Form.cardBack;
+            PlayerCard2.SizeMode = PictureBoxSizeMode.StretchImage;
+            PlayerCard2.Visible = false;
+            PlayerCard2.Height = 106;
+            PlayerCard2.Width = 69;
+            PlayerCard2.Top = 50;
+            PlayerCard2.Left = 81;
+            PlayerCard2.Click += this.Form.PlayerCard1_Click;
 
             lblHandName = new Label();
             lblHandName.Visible = false;
             lblHandName.Top = 25;
             lblHandName.Left = 6;
-            lblHandName.Text = "Hand";
+            lblHandName.Text = "";
 
             lblProbability = new Label();
             lblProbability.Visible = false;
             lblProbability.Top = 17;
             lblProbability.Left = 85;
-            lblProbability.Text = "100%";
+            lblProbability.Text = "";
             lblProbability.Font = new Font("Microsoft Sans Serif", 14);
             lblProbability.TextAlign = ContentAlignment.MiddleRight;
 
@@ -99,8 +106,8 @@ namespace PokerSim
 
             btnAddPlayer.Click += BtnAddPlayer_Click;
 
-            this.Controls.Add(picCard1);
-            this.Controls.Add(picCard2);
+            this.Controls.Add(PlayerCard1);
+            this.Controls.Add(PlayerCard2);
             this.Controls.Add(btnAddPlayer);
             this.Controls.Add(btnRandomCards);
             this.Controls.Add(btnRemovePlayer);
@@ -114,11 +121,35 @@ namespace PokerSim
             btnAddPlayer.Visible = true;
             btnRandomCards.Visible = false;
             btnRemovePlayer.Visible = false;
-            picCard1.Visible = false;
-            picCard2.Visible = false;
             lblProbability.Visible = false;
             lblHandName.Visible = false;
             this.Active = false;
+
+            // Remove and recreate cards to reset them
+            this.Controls.Remove(PlayerCard1);
+            this.Controls.Remove(PlayerCard2);
+
+            PlayerCard1 = new Card();
+            PlayerCard2 = new Card();
+            PlayerCard1.Image = this.Form.cardBack;
+            PlayerCard1.SizeMode = PictureBoxSizeMode.StretchImage;
+            PlayerCard1.Visible = false;
+            PlayerCard1.Height = 106;
+            PlayerCard1.Width = 69;
+            PlayerCard1.Top = 50;
+            PlayerCard1.Left = 6;
+            PlayerCard1.Click += this.Form.PlayerCard1_Click;
+
+            PlayerCard2.Image = this.Form.cardBack;
+            PlayerCard2.SizeMode = PictureBoxSizeMode.StretchImage;
+            PlayerCard2.Visible = false;
+            PlayerCard2.Height = 106;
+            PlayerCard2.Width = 69;
+            PlayerCard2.Top = 50;
+            PlayerCard2.Left = 81;
+            PlayerCard2.Click += this.Form.PlayerCard1_Click;
+            this.Controls.Add(PlayerCard1);
+            this.Controls.Add(PlayerCard2);
         }
 
         private void BtnAddPlayer_Click(object sender, EventArgs e)
@@ -126,8 +157,8 @@ namespace PokerSim
             btnAddPlayer.Visible = false;
             btnRandomCards.Visible = true;
             btnRemovePlayer.Visible = true;
-            picCard1.Visible = true;
-            picCard2.Visible = true;
+            PlayerCard1.Visible = true;
+            PlayerCard2.Visible = true;
             lblProbability.Visible = true;
             lblHandName.Visible = true;
             this.Active = true;
