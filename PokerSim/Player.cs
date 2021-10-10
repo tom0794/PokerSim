@@ -103,6 +103,7 @@ namespace PokerSim
             btnRandomCards.Left = 156;
             btnRandomCards.Top = 91;
             btnRandomCards.Visible = false;
+            //btnRandomCards.Click += BtnRandomCards_Click;
 
             btnAddPlayer.Click += BtnAddPlayer_Click;
 
@@ -116,6 +117,59 @@ namespace PokerSim
             this.Text = "Player " + player;
         }
 
+        private void BtnRandomCards_Click(object sender, EventArgs e)
+        {
+            if (PlayerCard1.Image != Form.cardBack)
+            {
+                Form.deck.Add(PlayerCard1);
+                PlayerCard1 = new Card();
+                PlayerCard1.Image = this.Form.cardBack;
+                PlayerCard1.SizeMode = PictureBoxSizeMode.StretchImage;
+                PlayerCard1.Height = 106;
+                PlayerCard1.Width = 69;
+                PlayerCard1.Top = 50;
+                PlayerCard1.Left = 6;
+                PlayerCard1.Click += this.Form.PlayerCard1_Click;
+            }
+            if (PlayerCard2.Image != Form.cardBack)
+            {
+                Form.deck.Add(PlayerCard2);
+                PlayerCard2 = new Card();
+                PlayerCard2.Image = this.Form.cardBack;
+                PlayerCard2.SizeMode = PictureBoxSizeMode.StretchImage;
+                PlayerCard2.Height = 106;
+                PlayerCard2.Width = 69;
+                PlayerCard2.Top = 50;
+                PlayerCard2.Left = 6;
+                PlayerCard2.Click += this.Form.PlayerCard1_Click;
+            }
+
+            Random r = new Random();
+            int cardIndex = r.Next(0, Form.deck.Count - 1);
+            PlayerCard1.Image = Form.deck[cardIndex].Image;
+            PlayerCard1.CardId = Form.deck[cardIndex].CardId;
+            PlayerCard1.Suit = Form.deck[cardIndex].Suit;
+            PlayerCard1.Strength = Form.deck[cardIndex].Strength;
+            PlayerCard1.Type = Form.deck[cardIndex].Type;
+            PlayerCard1.LongName = Form.deck[cardIndex].LongName;
+            PlayerCard1.ShortName = Form.deck[cardIndex].ShortName;
+            PlayerCard1.ImageName = Form.deck[cardIndex].ImageName;
+            // remove the card from the deck
+            Form.deck.Remove(Form.deck[cardIndex]);
+
+            cardIndex = r.Next(0, Form.deck.Count - 1);
+            PlayerCard2.Image = Form.deck[cardIndex].Image;
+            PlayerCard2.CardId = Form.deck[cardIndex].CardId;
+            PlayerCard2.Suit = Form.deck[cardIndex].Suit;
+            PlayerCard2.Strength = Form.deck[cardIndex].Strength;
+            PlayerCard2.Type = Form.deck[cardIndex].Type;
+            PlayerCard2.LongName = Form.deck[cardIndex].LongName;
+            PlayerCard2.ShortName = Form.deck[cardIndex].ShortName;
+            PlayerCard2.ImageName = Form.deck[cardIndex].ImageName;
+            // remove the card from the deck
+            Form.deck.Remove(Form.deck[cardIndex]);
+        }
+
         private void BtnRemovePlayer_Click(object sender, EventArgs e)
         {
             btnAddPlayer.Visible = true;
@@ -124,6 +178,14 @@ namespace PokerSim
             lblProbability.Visible = false;
             lblHandName.Visible = false;
             this.Active = false;
+            if (PlayerCard1.Image != Form.cardBack)
+            {
+                Form.deck.Add(PlayerCard1);
+            }
+            if (PlayerCard2.Image != Form.cardBack)
+            {
+                Form.deck.Add(PlayerCard2);
+            }
 
             // Remove and recreate cards to reset them
             this.Controls.Remove(PlayerCard1);

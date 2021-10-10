@@ -21,6 +21,8 @@ namespace PokerSim
         private CardMenu CardMenu = new CardMenu();
         private Card selectedCard = new Card();
 
+        public List<Card> deck = new List<Card>();
+
         public Image cardBack = PokerSim.Properties.Resources.gray_back;
 
         public PokerSimForm()
@@ -53,7 +55,7 @@ namespace PokerSim
                     playerLeft += 200;
                 }
             }
-            CreateCardMenu();
+            deck = Card.CreateDeck();
         }
 
         /// <summary>
@@ -67,31 +69,33 @@ namespace PokerSim
             CardMenu.BringToFront();
             CardMenu.Visible = false;
             int cardRow = 0;
+            deck = deck.OrderBy(c => c.CardId).ToList();
+            int currentSuit = deck[0].Suit;
+            int leftSpacing = 0;
 
-            for (int i = 0; i < 13; i++)
+            foreach (Card c in deck)
             {
-                // don't do this here--create the deck, then use the deck to make the menu
-                Card card = new Card();
-                //card.Image = PokerSim.Properties.Resources.AC;
-                card.Image = (Image)Properties.Resources.ResourceManager.GetObject("_10D");
-
-                //card.Image = PokerSim.Properties.Resources._10D;
-                card.SizeMode = PictureBoxSizeMode.StretchImage;
-                card.Height = CARD_HEIGHT;
-                card.Width = CARD_WIDTH;
-
-                //card.Click += Card_Click;
-                card.Click += MenuCard_Click;
-
-                CardMenu.MenuCards.Add(card);
-                card.Top = 10 + (108 * cardRow);
-                card.Left = (70 * i) + 10;
-                CardMenu.Controls.Add(card);
-                if (i == 12 && cardRow < 3)
+                c.Click -= MenuCard_Click;
+                CardMenu.MenuCards.Add(c);
+            }
+            for (int i = 0; i < deck.Count; i++)
+            {
+                if (CardMenu.MenuCards[i].Suit != currentSuit)
                 {
+                    currentSuit++;
                     cardRow++;
-                    i = -1;
+                    leftSpacing = 0;
                 }
+                CardMenu.MenuCards[i].SizeMode = PictureBoxSizeMode.StretchImage;
+                CardMenu.MenuCards[i].Height = CARD_HEIGHT;
+                CardMenu.MenuCards[i].Width = CARD_WIDTH;
+
+                CardMenu.MenuCards[i].Click += MenuCard_Click;
+
+                CardMenu.MenuCards[i].Top = 10 + (108 * cardRow);
+                CardMenu.MenuCards[i].Left = (70 * leftSpacing) + 10;
+                CardMenu.Controls.Add(CardMenu.MenuCards[i]);
+                leftSpacing++;
             }
         }
 
@@ -99,9 +103,19 @@ namespace PokerSim
         {
             Card clickedCard = (Card)sender;
             selectedCard.Image = clickedCard.Image;
-            //selectedCard.Suit = clickedCard.Suit;
+            selectedCard.CardId = clickedCard.CardId;
+            selectedCard.Suit = clickedCard.Suit;
+            selectedCard.Strength = clickedCard.Strength;
+            selectedCard.Type = clickedCard.Type;
+            selectedCard.LongName = clickedCard.LongName;
+            selectedCard.ShortName = clickedCard.ShortName;
+            selectedCard.ImageName = clickedCard.ImageName;
+            //Console.WriteLine("Card is now: " + selectedCard.LongName);
             // remove the card from the deck
+            deck.Remove(clickedCard);
+            CardMenu.MenuCards.Clear();
             CardMenu.HideMenu();
+            this.Controls.Remove(CardMenu);
         }
 
         /// <summary>
@@ -115,6 +129,21 @@ namespace PokerSim
             {
                 Card clickedCard = (Card)sender;
                 selectedCard = clickedCard;
+                // if the card is not empty, add it back to the deck
+                if (clickedCard.Image != cardBack)
+                {
+                    Card addBack = new Card();
+                    addBack.Image = clickedCard.Image;
+                    addBack.CardId = clickedCard.CardId;
+                    addBack.Suit = clickedCard.Suit;
+                    addBack.Strength = clickedCard.Strength;
+                    addBack.Type = clickedCard.Type;
+                    addBack.LongName = clickedCard.LongName;
+                    addBack.ShortName = clickedCard.ShortName;
+                    addBack.ImageName = clickedCard.ImageName;
+                    deck.Add(addBack);
+                }
+                CreateCardMenu();
                 CardMenu.ShowMenu();
             }
         }

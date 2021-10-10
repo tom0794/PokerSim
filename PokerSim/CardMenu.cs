@@ -20,7 +20,7 @@ namespace PokerSim
             this.Left = 50;
             this.Width = 930;
             this.Height = 450;
-            this.BackColor = System.Drawing.Color.LawnGreen;
+            this.BackColor = System.Drawing.Color.Green;
             this.MenuCards = new List<Card>();
             ActivityState = false;
         }

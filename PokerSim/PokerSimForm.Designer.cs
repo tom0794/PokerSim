@@ -36,14 +36,14 @@ namespace PokerSim
             // 
             this.pnlPlayers.Location = new System.Drawing.Point(8, 8);
             this.pnlPlayers.Name = "pnlPlayers";
-            this.pnlPlayers.Size = new System.Drawing.Size(1034, 321);
+            this.pnlPlayers.Size = new System.Drawing.Size(1016, 321);
             this.pnlPlayers.TabIndex = 0;
             // 
             // PokerSimForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1051, 544);
+            this.ClientSize = new System.Drawing.Size(1035, 544);
             this.Controls.Add(this.pnlPlayers);
             this.Name = "PokerSimForm";
             this.Text = "Form1";
