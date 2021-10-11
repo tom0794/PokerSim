@@ -99,18 +99,28 @@ namespace PokerSim
             }
         }
 
+        /// <summary>
+        /// Updates the properties of a card to match a desired card.
+        /// </summary>
+        /// <param name="newCard">The card being updated.</param>
+        /// <param name="sourceCard">The card whose properties are being copied.</param>
+        public void UpdateCard(ref Card newCard, Card sourceCard)
+        {
+            newCard.Image = sourceCard.Image;
+            newCard.CardId = sourceCard.CardId;
+            newCard.Suit = sourceCard.Suit;
+            newCard.Strength = sourceCard.Strength;
+            newCard.Type = sourceCard.Type;
+            newCard.LongName = sourceCard.LongName;
+            newCard.ShortName = sourceCard.ShortName;
+            newCard.ImageName = sourceCard.ImageName;
+        }
+
         private void MenuCard_Click(object sender, EventArgs e)
         {
             Card clickedCard = (Card)sender;
-            selectedCard.Image = clickedCard.Image;
-            selectedCard.CardId = clickedCard.CardId;
-            selectedCard.Suit = clickedCard.Suit;
-            selectedCard.Strength = clickedCard.Strength;
-            selectedCard.Type = clickedCard.Type;
-            selectedCard.LongName = clickedCard.LongName;
-            selectedCard.ShortName = clickedCard.ShortName;
-            selectedCard.ImageName = clickedCard.ImageName;
-            //Console.WriteLine("Card is now: " + selectedCard.LongName);
+            UpdateCard(ref selectedCard, clickedCard);
+
             // remove the card from the deck
             deck.Remove(clickedCard);
             CardMenu.MenuCards.Clear();
@@ -133,14 +143,7 @@ namespace PokerSim
                 if (clickedCard.Image != cardBack)
                 {
                     Card addBack = new Card();
-                    addBack.Image = clickedCard.Image;
-                    addBack.CardId = clickedCard.CardId;
-                    addBack.Suit = clickedCard.Suit;
-                    addBack.Strength = clickedCard.Strength;
-                    addBack.Type = clickedCard.Type;
-                    addBack.LongName = clickedCard.LongName;
-                    addBack.ShortName = clickedCard.ShortName;
-                    addBack.ImageName = clickedCard.ImageName;
+                    UpdateCard(ref addBack, clickedCard);
                     deck.Add(addBack);
                 }
                 CreateCardMenu();

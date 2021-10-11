@@ -80,8 +80,8 @@ namespace PokerSim
 
             btnAddPlayer = new Button();
             btnAddPlayer.Top = 30;
-            btnAddPlayer.Left = 30;
-            btnAddPlayer.Width = 100;
+            btnAddPlayer.Left = 48;
+            btnAddPlayer.Width = 95;
             btnAddPlayer.Height = 50;
             btnAddPlayer.Tag = player;
             btnAddPlayer.Text = "Add Player " + player;
@@ -103,7 +103,7 @@ namespace PokerSim
             btnRandomCards.Left = 156;
             btnRandomCards.Top = 91;
             btnRandomCards.Visible = false;
-            //btnRandomCards.Click += BtnRandomCards_Click;
+            btnRandomCards.Click += BtnRandomCards_Click;
 
             btnAddPlayer.Click += BtnAddPlayer_Click;
 
@@ -121,31 +121,20 @@ namespace PokerSim
         {
             if (PlayerCard1.Image != Form.cardBack)
             {
-                Form.deck.Add(PlayerCard1);
-                PlayerCard1 = new Card();
-                PlayerCard1.Image = this.Form.cardBack;
-                PlayerCard1.SizeMode = PictureBoxSizeMode.StretchImage;
-                PlayerCard1.Height = 106;
-                PlayerCard1.Width = 69;
-                PlayerCard1.Top = 50;
-                PlayerCard1.Left = 6;
-                PlayerCard1.Click += this.Form.PlayerCard1_Click;
+                Card addBack = new Card();
+                Form.UpdateCard(ref addBack, PlayerCard1);
+                Form.deck.Add(addBack);
             }
             if (PlayerCard2.Image != Form.cardBack)
             {
-                Form.deck.Add(PlayerCard2);
-                PlayerCard2 = new Card();
-                PlayerCard2.Image = this.Form.cardBack;
-                PlayerCard2.SizeMode = PictureBoxSizeMode.StretchImage;
-                PlayerCard2.Height = 106;
-                PlayerCard2.Width = 69;
-                PlayerCard2.Top = 50;
-                PlayerCard2.Left = 6;
-                PlayerCard2.Click += this.Form.PlayerCard1_Click;
+                Card addBack = new Card();
+                Form.UpdateCard(ref addBack, PlayerCard2);
+                Form.deck.Add(addBack);
             }
 
             Random r = new Random();
             int cardIndex = r.Next(0, Form.deck.Count - 1);
+            //Form.UpdateCard(ref PlayerCard1, Form.deck[cardIndex]);
             PlayerCard1.Image = Form.deck[cardIndex].Image;
             PlayerCard1.CardId = Form.deck[cardIndex].CardId;
             PlayerCard1.Suit = Form.deck[cardIndex].Suit;
@@ -180,11 +169,15 @@ namespace PokerSim
             this.Active = false;
             if (PlayerCard1.Image != Form.cardBack)
             {
-                Form.deck.Add(PlayerCard1);
+                Card addBack = new Card();
+                Form.UpdateCard(ref addBack, PlayerCard1);
+                Form.deck.Add(addBack);
             }
             if (PlayerCard2.Image != Form.cardBack)
             {
-                Form.deck.Add(PlayerCard2);
+                Card addBack = new Card();
+                Form.UpdateCard(ref addBack, PlayerCard2);
+                Form.deck.Add(addBack);
             }
 
             // Remove and recreate cards to reset them
