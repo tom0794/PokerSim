@@ -18,10 +18,12 @@ namespace PokerSim
         public const int CARD_HEIGHT = 106;
         public const int CARD_WIDTH = 69;
 
-        private CardMenu CardMenu = new CardMenu();
+        private CardMenu cardMenu = new CardMenu();
         private Card selectedCard = new Card();
 
         public List<Card> deck = new List<Card>();
+        public List<Player> activePlayers = new List<Player>();
+        public List<Card> communityCards = new List<Card>();
 
         public Image cardBack = PokerSim.Properties.Resources.gray_back;
 
@@ -56,6 +58,54 @@ namespace PokerSim
                 }
             }
             deck = Card.CreateDeck();
+            CreateCommunityCards();
+        }
+
+        /// <summary>
+        /// Creates the five community cards
+        /// </summary>
+        private void CreateCommunityCards()
+        {
+            int cardTop = 15;
+            int cardLeft = 15;
+            int cardSpacing = 15;
+            string commCardName = "communityCard";
+            for (int i = 0; i < 5; i++)
+            {
+                Card newCommCard = new Card();
+                newCommCard.Image = cardBack;
+                newCommCard.SizeMode = PictureBoxSizeMode.StretchImage;
+                newCommCard.Width = CARD_WIDTH * 2;
+                newCommCard.Height = CARD_HEIGHT * 2;
+                newCommCard.Top = cardTop;
+                newCommCard.Left = cardLeft + (i * cardSpacing);
+                newCommCard.Name = commCardName + (i + 1).ToString();
+                newCommCard.Click += PlayerCard1_Click;
+                pnlCommunity.Controls.Add(newCommCard);
+                cardLeft += newCommCard.Width;
+            }
+        }
+
+        /// <summary>
+        /// Clears the community cards, returning any set cards to the deck
+        /// </summary>
+        private void ClearCommunityCards()
+        {
+            foreach (Control c in pnlCommunity.Controls)
+            {
+                if (c is Card)
+                {
+                    Card existing = (Card)c;
+                    if (existing.Image != cardBack)
+                    {
+                        Card addBack = new Card();
+                        UpdateCard(ref addBack, (Card)c);
+                        deck.Add(addBack); 
+                    }
+                }
+            }
+            pnlCommunity.Controls.Clear();
+            CreateCommunityCards();
         }
 
         /// <summary>
@@ -64,10 +114,10 @@ namespace PokerSim
         private void CreateCardMenu()
         {
             // generate card menu using deck
-            CardMenu = new CardMenu();
-            this.Controls.Add(CardMenu);
-            CardMenu.BringToFront();
-            CardMenu.Visible = false;
+            cardMenu = new CardMenu();
+            this.Controls.Add(cardMenu);
+            cardMenu.BringToFront();
+            cardMenu.Visible = false;
             int cardRow = 0;
             deck = deck.OrderBy(c => c.CardId).ToList();
             int currentSuit = deck[0].Suit;
@@ -76,25 +126,25 @@ namespace PokerSim
             foreach (Card c in deck)
             {
                 c.Click -= MenuCard_Click;
-                CardMenu.MenuCards.Add(c);
+                cardMenu.MenuCards.Add(c);
             }
             for (int i = 0; i < deck.Count; i++)
             {
-                if (CardMenu.MenuCards[i].Suit != currentSuit)
+                if (cardMenu.MenuCards[i].Suit != currentSuit)
                 {
                     currentSuit++;
                     cardRow++;
                     leftSpacing = 0;
                 }
-                CardMenu.MenuCards[i].SizeMode = PictureBoxSizeMode.StretchImage;
-                CardMenu.MenuCards[i].Height = CARD_HEIGHT;
-                CardMenu.MenuCards[i].Width = CARD_WIDTH;
+                cardMenu.MenuCards[i].SizeMode = PictureBoxSizeMode.StretchImage;
+                cardMenu.MenuCards[i].Height = CARD_HEIGHT;
+                cardMenu.MenuCards[i].Width = CARD_WIDTH;
 
-                CardMenu.MenuCards[i].Click += MenuCard_Click;
+                cardMenu.MenuCards[i].Click += MenuCard_Click;
 
-                CardMenu.MenuCards[i].Top = 10 + (108 * cardRow);
-                CardMenu.MenuCards[i].Left = (70 * leftSpacing) + 10;
-                CardMenu.Controls.Add(CardMenu.MenuCards[i]);
+                cardMenu.MenuCards[i].Top = 10 + (108 * cardRow);
+                cardMenu.MenuCards[i].Left = (70 * leftSpacing) + 10;
+                cardMenu.Controls.Add(cardMenu.MenuCards[i]);
                 leftSpacing++;
             }
         }
@@ -123,9 +173,9 @@ namespace PokerSim
 
             // remove the card from the deck
             deck.Remove(clickedCard);
-            CardMenu.MenuCards.Clear();
-            CardMenu.HideMenu();
-            this.Controls.Remove(CardMenu);
+            cardMenu.MenuCards.Clear();
+            cardMenu.HideMenu();
+            this.Controls.Remove(cardMenu);
         }
 
         /// <summary>
@@ -135,7 +185,7 @@ namespace PokerSim
         /// <param name="e"></param>
         public void PlayerCard1_Click(object sender, EventArgs e)
         {
-            if (!CardMenu.ActivityState)
+            if (!cardMenu.ActivityState)
             {
                 Card clickedCard = (Card)sender;
                 selectedCard = clickedCard;
@@ -147,8 +197,13 @@ namespace PokerSim
                     deck.Add(addBack);
                 }
                 CreateCardMenu();
-                CardMenu.ShowMenu();
+                cardMenu.ShowMenu();
             }
+        }
+
+        private void btnClearCommCards_Click(object sender, EventArgs e)
+        {
+            ClearCommunityCards();
         }
     }
 }

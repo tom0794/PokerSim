@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace PokerSim
 {
-    class Player : GroupBox
+    public class Player : GroupBox
     {
         public Card PlayerCard1 { get; set; }
         public Card PlayerCard2 { get; set; }
@@ -205,6 +205,8 @@ namespace PokerSim
             PlayerCard2.Click += this.Form.PlayerCard1_Click;
             this.Controls.Add(PlayerCard1);
             this.Controls.Add(PlayerCard2);
+
+            Form.activePlayers.Remove(this);
         }
 
         private void BtnAddPlayer_Click(object sender, EventArgs e)
@@ -217,6 +219,7 @@ namespace PokerSim
             lblProbability.Visible = true;
             lblHandName.Visible = true;
             this.Active = true;
+            Form.activePlayers.Add(this);
         }
     }
 }
