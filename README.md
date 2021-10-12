@@ -6,6 +6,9 @@ Notes
 - Add hand strength calculation
 - Add runout calculation
 
+Future Features
+- Calculate and list outs
+
 Completed
 - Make an update card function.
 - ex. public Card UpdateCard(Card sourceCard, ref Card destinationCard) { set newCard attributes to sourceCard attributes }
