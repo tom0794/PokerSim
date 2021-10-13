@@ -1,6 +1,7 @@
 # PokerSim
 
 Notes
+- Implement dead cards
 - Add controls for calculating win probabilities, dealing random community cards, and resetting program
 - Add hand strength calculation
 - Add runout calculation
