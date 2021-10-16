@@ -17,6 +17,7 @@ namespace PokerSim
         private const int MAX_PLAYERS = 10;
         public const int CARD_HEIGHT = 106;
         public const int CARD_WIDTH = 69;
+        private const int NUM_DEAD_CARDS = 10;
 
         private CardMenu cardMenu = new CardMenu();
         private Card selectedCard = new Card();
@@ -59,6 +60,7 @@ namespace PokerSim
             }
             deck = Card.CreateDeck();
             CreateCommunityCards();
+            CreateDeadCards();
         }
 
         /// <summary>
@@ -105,7 +107,49 @@ namespace PokerSim
                 }
             }
             pnlCommunity.Controls.Clear();
+            communityCards.Clear();
             CreateCommunityCards();
+        }
+
+        private void CreateDeadCards()
+        {
+            int cardTop = 15;
+            int cardLeft = 10;
+            int cardSpacing = 5;
+            string deadCardName = "deadCard";
+            for (int i = 0; i < NUM_DEAD_CARDS; i++)
+            {
+                Card newDeadCard = new Card();
+                newDeadCard.Image = cardBack;
+                newDeadCard.SizeMode = PictureBoxSizeMode.StretchImage;
+                newDeadCard.Width = CARD_WIDTH;
+                newDeadCard.Height = CARD_HEIGHT;
+                newDeadCard.Top = cardTop;
+                newDeadCard.Left = cardLeft + (i * cardSpacing);
+                newDeadCard.Name = deadCardName + (i + 1).ToString();
+                newDeadCard.Click += PlayerCard1_Click;
+                grpDeadCards.Controls.Add(newDeadCard);
+                cardLeft += newDeadCard.Width;
+            }
+        }
+
+        private void ClearDeadCards()
+        {
+            foreach (Control c in grpDeadCards.Controls)
+            {
+                if (c is Card)
+                {
+                    Card existing = (Card)c;
+                    if (existing.Image != cardBack)
+                    {
+                        Card addBack = new Card();
+                        UpdateCard(ref addBack, (Card)c);
+                        deck.Add(addBack);
+                    }
+                }
+            }
+            grpDeadCards.Controls.Clear();
+            CreateDeadCards();
         }
 
         /// <summary>
@@ -204,6 +248,36 @@ namespace PokerSim
         private void btnClearCommCards_Click(object sender, EventArgs e)
         {
             ClearCommunityCards();
+        }
+
+        private void btnClearDead_Click(object sender, EventArgs e)
+        {
+            ClearDeadCards();
+        }
+
+        private void btnTestStrength_Click(object sender, EventArgs e)
+        {
+            txtOutput.Clear();
+            communityCards.Clear();
+            foreach (Control ctr in pnlCommunity.Controls)
+            {
+                if (ctr is Card)
+                {
+                    Card commCard = (Card)ctr;
+                    if (commCard.Image != cardBack)
+                    {
+                        communityCards.Add(commCard);
+                    }
+                }
+            }
+            if (communityCards.Count == 5)
+            {
+                HandStrength handStrength = HandStrength.GetHandStrength(communityCards.OrderBy(c => c.Strength).ToList());
+                foreach (int i in handStrength.HandValue)
+                {
+                    txtOutput.Text += i + "\n";
+                }
+            }
         }
     }
 }

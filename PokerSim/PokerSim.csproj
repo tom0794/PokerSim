@@ -52,6 +52,7 @@
     <Compile Include="CardMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="HandStrength.cs" />
     <Compile Include="Player.cs">
       <SubType>Component</SubType>
     </Compile>
