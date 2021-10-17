@@ -270,13 +270,98 @@ namespace PokerSim
                     }
                 }
             }
-            if (communityCards.Count == 5)
+            if (communityCards.Count == 5 && activePlayers.Count >= 1)
             {
-                HandStrength handStrength = HandStrength.GetHandStrength(communityCards.OrderBy(c => c.Strength).ToList());
+                communityCards.Add(activePlayers[0].PlayerCard1);
+                communityCards.Add(activePlayers[0].PlayerCard2);
+                HandStrength handStrength = HandStrength.GetHandStrengthSeven(communityCards.OrderBy(c => c.Strength).ToList());
                 foreach (int i in handStrength.HandValue)
                 {
                     txtOutput.Text += i + "\n";
                 }
+            }
+        }
+
+        private void btnDealRandom_Click(object sender, EventArgs e)
+        {
+            if (btnDealRandom.Text.Contains("Flop"))
+            {
+                Random r = new Random();
+                for (int i = 0; i < 3; i++)
+                {
+                    int index = r.Next(0, deck.Count - 1);
+                    
+                    if (pnlCommunity.Controls[i] is Card)
+                    {
+                        Card commCard = (Card)pnlCommunity.Controls[i];
+                        if (commCard.Image == cardBack)
+                        {
+                            commCard.Image = deck[index].Image;
+                            commCard.CardId = deck[index].CardId;
+                            commCard.Suit = deck[index].Suit;
+                            commCard.Strength = deck[index].Strength;
+                            commCard.Type = deck[index].Type;
+                            commCard.LongName = deck[index].LongName;
+                            commCard.ShortName = deck[index].ShortName;
+                            commCard.ImageName = deck[index].ImageName;
+                            communityCards.Add(commCard);
+                            deck.Remove(deck[index]);
+                        }
+                    }                   
+                }
+                btnDealRandom.Text = "Deal Random Turn";
+                return;
+            }
+
+            if (btnDealRandom.Text.Contains("Turn"))
+            {
+                Random r = new Random();
+                int index = r.Next(0, deck.Count - 1);
+
+                if (pnlCommunity.Controls[3] is Card)
+                {
+                    Card commCard = (Card)pnlCommunity.Controls[3];
+                    if (commCard.Image == cardBack)
+                    {
+                        commCard.Image = deck[index].Image;
+                        commCard.CardId = deck[index].CardId;
+                        commCard.Suit = deck[index].Suit;
+                        commCard.Strength = deck[index].Strength;
+                        commCard.Type = deck[index].Type;
+                        commCard.LongName = deck[index].LongName;
+                        commCard.ShortName = deck[index].ShortName;
+                        commCard.ImageName = deck[index].ImageName;
+                        communityCards.Add(commCard);
+                        deck.Remove(deck[index]);
+                    }
+                }
+                btnDealRandom.Text = "Deal Random River";
+                return;
+            }
+
+            if (btnDealRandom.Text.Contains("River"))
+            {
+                Random r = new Random();
+                int index = r.Next(0, deck.Count - 1);
+
+                if (pnlCommunity.Controls[4] is Card)
+                {
+                    Card commCard = (Card)pnlCommunity.Controls[4];
+                    if (commCard.Image == cardBack)
+                    {
+                        commCard.Image = deck[index].Image;
+                        commCard.CardId = deck[index].CardId;
+                        commCard.Suit = deck[index].Suit;
+                        commCard.Strength = deck[index].Strength;
+                        commCard.Type = deck[index].Type;
+                        commCard.LongName = deck[index].LongName;
+                        commCard.ShortName = deck[index].ShortName;
+                        commCard.ImageName = deck[index].ImageName;
+                        communityCards.Add(commCard);
+                        deck.Remove(deck[index]);
+                    }
+                }
+                btnDealRandom.Text = "Deal Random Flop";
             }
         }
     }

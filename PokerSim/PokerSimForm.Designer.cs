@@ -36,6 +36,7 @@ namespace PokerSim
             this.btnClearDead = new System.Windows.Forms.Button();
             this.btnTestStrength = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.RichTextBox();
+            this.btnDealRandom = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // pnlPlayers
@@ -85,7 +86,7 @@ namespace PokerSim
             // 
             // btnTestStrength
             // 
-            this.btnTestStrength.Location = new System.Drawing.Point(801, 299);
+            this.btnTestStrength.Location = new System.Drawing.Point(801, 385);
             this.btnTestStrength.Name = "btnTestStrength";
             this.btnTestStrength.Size = new System.Drawing.Size(96, 39);
             this.btnTestStrength.TabIndex = 5;
@@ -95,11 +96,21 @@ namespace PokerSim
             // 
             // txtOutput
             // 
-            this.txtOutput.Location = new System.Drawing.Point(809, 369);
+            this.txtOutput.Location = new System.Drawing.Point(801, 430);
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.Size = new System.Drawing.Size(174, 85);
             this.txtOutput.TabIndex = 6;
             this.txtOutput.Text = "";
+            // 
+            // btnDealRandom
+            // 
+            this.btnDealRandom.Location = new System.Drawing.Point(800, 299);
+            this.btnDealRandom.Name = "btnDealRandom";
+            this.btnDealRandom.Size = new System.Drawing.Size(223, 23);
+            this.btnDealRandom.TabIndex = 7;
+            this.btnDealRandom.Text = "Deal Random Flop";
+            this.btnDealRandom.UseVisualStyleBackColor = true;
+            this.btnDealRandom.Click += new System.EventHandler(this.btnDealRandom_Click);
             // 
             // PokerSimForm
             // 
@@ -107,6 +118,7 @@ namespace PokerSim
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1035, 625);
+            this.Controls.Add(this.btnDealRandom);
             this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.btnTestStrength);
             this.Controls.Add(this.btnClearDead);
@@ -130,6 +142,7 @@ namespace PokerSim
         private System.Windows.Forms.Button btnClearDead;
         private System.Windows.Forms.Button btnTestStrength;
         private System.Windows.Forms.RichTextBox txtOutput;
+        private System.Windows.Forms.Button btnDealRandom;
     }
 }
 
