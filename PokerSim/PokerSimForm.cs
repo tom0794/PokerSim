@@ -274,7 +274,7 @@ namespace PokerSim
             {
                 communityCards.Add(activePlayers[0].PlayerCard1);
                 communityCards.Add(activePlayers[0].PlayerCard2);
-                HandStrength handStrength = HandStrength.GetHandStrengthSeven(communityCards.OrderBy(c => c.Strength).ToList());
+                HandStrength handStrength = HandStrength.GetHandStrength(communityCards.OrderBy(c => c.Strength).ToList());
                 foreach (int i in handStrength.HandValue)
                 {
                     txtOutput.Text += i + "\n";

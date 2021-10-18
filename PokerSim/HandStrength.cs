@@ -25,7 +25,7 @@ namespace PokerSim
         private const int ONE_PAIR = 1;
         private const int HIGH_CARD = 0;
 
-        public static HandStrength GetHandStrengthSeven(List<Card> inCards)
+        public static HandStrength GetHandStrength(List<Card> inCards)
         {
             HandStrength handStrength = new HandStrength();
             handStrength.HandValue = new int[6];
@@ -59,15 +59,23 @@ namespace PokerSim
             // If a straight is found, sets the handStrength hand values and returns true
             bool IsStraight(int strength)
             {
-                for (int k = 0; k < inCards.Count - 4; k++)
+                List<Card> noDupes = new List<Card>();
+                foreach (Card card in inCards)
                 {
-                    if (inCards[k].Strength == inCards[k + 1].Strength - 1 &&
-                        inCards[k].Strength == inCards[k + 2].Strength - 2 &&
-                        inCards[k].Strength == inCards[k + 3].Strength - 3 &&
-                        inCards[k].Strength == inCards[k + 4].Strength - 4)
+                    if (noDupes.Count(c => c.Strength == card.Strength) == 0)
+                    {
+                        noDupes.Add(card);
+                    }
+                }
+                for (int k = 0; k < noDupes.Count - 4; k++)
+                {
+                    if (noDupes[k].Strength == noDupes[k + 1].Strength - 1 &&
+                        noDupes[k].Strength == noDupes[k + 2].Strength - 2 &&
+                        noDupes[k].Strength == noDupes[k + 3].Strength - 3 &&
+                        noDupes[k].Strength == noDupes[k + 4].Strength - 4)
                     {
                         handStrength.HandValue[0] = strength;
-                        handStrength.HandValue[1] = inCards[k + 4].Strength;
+                        handStrength.HandValue[1] = noDupes[k + 4].Strength;
                         for (int j = 2; j < 6; j++)
                         {
                             handStrength.HandValue[j] = 0;
@@ -76,11 +84,11 @@ namespace PokerSim
                     }
                 }
 
-                if (inCards.Count(c => c.Strength == 2) >= 1 &&
-                    inCards.Count(c => c.Strength == 3) >= 1 &&
-                    inCards.Count(c => c.Strength == 4) >= 1 &&
-                    inCards.Count(c => c.Strength == 5) >= 1 &&
-                    inCards.Count(c => c.Strength == 14) >= 1)
+                if (noDupes.Count(c => c.Strength == 2) >= 1 &&
+                    noDupes.Count(c => c.Strength == 3) >= 1 &&
+                    noDupes.Count(c => c.Strength == 4) >= 1 &&
+                    noDupes.Count(c => c.Strength == 5) >= 1 &&
+                    noDupes.Count(c => c.Strength == 14) >= 1)
                 {
                     handStrength.HandValue[0] = strength;
                     handStrength.HandValue[1] = 5;
@@ -132,7 +140,7 @@ namespace PokerSim
                 inCards.RemoveAll(c => c.Strength == quadCard.Strength);
                 handStrength.HandValue[0] = QUADS;
                 handStrength.HandValue[1] = quadCard.Strength;
-                handStrength.HandValue[2] = inCards[2].Strength;
+                handStrength.HandValue[2] = inCards[inCards.Count - 1].Strength;
                 return handStrength;
             }
 
@@ -158,8 +166,8 @@ namespace PokerSim
                 handStrength.HandValue[0] = TRIPS;
                 inCards.RemoveAll(c => c.Strength == tripsCards[0].Strength);
                 handStrength.HandValue[1] = tripsCards[0].Strength;
-                handStrength.HandValue[2] = inCards[3].Strength;
-                handStrength.HandValue[3] = inCards[2].Strength;
+                handStrength.HandValue[2] = inCards[inCards.Count - 1].Strength;
+                handStrength.HandValue[3] = inCards[inCards.Count - 2].Strength;
                 return handStrength;
             }
 
