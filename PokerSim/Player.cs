@@ -66,9 +66,10 @@ namespace PokerSim
 
             lblHandName = new Label();
             lblHandName.Visible = false;
-            lblHandName.Top = 25;
+            lblHandName.Top = 15;
             lblHandName.Left = 6;
             lblHandName.Text = "";
+            lblHandName.Height = 30;
 
             lblProbability = new Label();
             lblProbability.Visible = false;

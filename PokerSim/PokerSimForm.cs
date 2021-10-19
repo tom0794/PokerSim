@@ -279,6 +279,7 @@ namespace PokerSim
                 {
                     txtOutput.Text += i + "\n";
                 }
+                activePlayers[0].lblHandName.Text = HandStrength.HandName(handStrength.HandValue);
             }
         }
 

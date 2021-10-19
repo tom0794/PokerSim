@@ -13,7 +13,6 @@ namespace PokerSim
          *  1-5 - Tiebreakers. Hands with fewer than 5 tiebreakers will use 0 as a placeholder.
          */
         public int[] HandValue { get; set; }
-        public string HandName { get; set; }
 
         private const int STRAIGHT_FLUSH = 8;
         private const int QUADS = 7;
@@ -67,7 +66,7 @@ namespace PokerSim
                         noDupes.Add(card);
                     }
                 }
-                for (int k = 0; k < noDupes.Count - 4; k++)
+                for (int k = noDupes.Count - 5; k >= 0; k--)
                 {
                     if (noDupes[k].Strength == noDupes[k + 1].Strength - 1 &&
                         noDupes[k].Strength == noDupes[k + 2].Strength - 2 &&
@@ -204,234 +203,117 @@ namespace PokerSim
 
             return handStrength;
         }
-        public static HandStrength GetHandStrengthFive(List<Card> inCards)
+        
+        public static string HandName(int[] handValues)
         {
-            HandStrength handStrength = new HandStrength();
-            handStrength.HandValue = new int[6];
+            string handName = "";
+            string highCard = CardName(handValues[1]);
 
-            bool isFlush = IsFlush(inCards);
-            bool isStraight = IsStraight(inCards);
-
-            // Check for straight flush
-            if (isFlush && isStraight)
+            switch (handValues[0])
             {
-                handStrength.HandValue[0] = STRAIGHT_FLUSH;
-                // if it's a five high straight flush the five is 4th and ace is 5th
-                if (inCards[3].Strength == 5 && inCards[4].Strength == 14)
-                {
-                    handStrength.HandValue[1] = inCards[3].Strength;
-                }
-                else
-                {
-                    handStrength.HandValue[1] = inCards[4].Strength;
-                }
-                for (int i = 2; i < 6; i++)
-                {
-                    handStrength.HandValue[i] = 0;
-                }
-                return handStrength;
-            }
-
-            // Set value if flush
-            if (isFlush)
-            {
-                handStrength.HandValue[0] = FLUSH;
-                for (int i = 0; i < inCards.Count; i++)
-                {
-                    handStrength.HandValue[inCards.Count - i] = inCards[i].Strength;
-                }
-                return handStrength;
-            }
-
-            // Set value if straight
-            if (isStraight)
-            {
-                handStrength.HandValue[0] = STRAIGHT;
-                if (inCards[4].Strength == 14 && inCards[3].Strength == 5)
-                {
-                    handStrength.HandValue[1] = 5;
-                }
-                else
-                {
-                    handStrength.HandValue[1] = inCards[4].Strength;
-                }
-                for (int i = 2; i < 6; i++)
-                {
-                    handStrength.HandValue[i] = 0;
-                }
-                return handStrength;
-            }
-
-            // Check for quads
-            foreach (Card card in inCards)
-            {
-                if (inCards.Count(c => c.Strength == card.Strength) == 4)
-                {
-                    handStrength.HandValue[0] = QUADS;
-                    handStrength.HandValue[1] = card.Strength;
-                    if (inCards[0].Strength == inCards[1].Strength)
+                case 0:
+                    handName = $"{highCard} high";
+                    break;
+                case 1:
+                    if (handValues[1] != 6)
                     {
-                        handStrength.HandValue[2] = inCards[4].Strength;
+                        handName = $"Pair of{highCard}s";
                     }
                     else
                     {
-                        handStrength.HandValue[2] = inCards[0].Strength;
+                        handName = $"Pair of {highCard}es";
                     }
-                    for (int i = 3; i < 6; i++)
+                    break;
+                case 2:
+                    handName = $"Two Pair\n({highCard} / {CardName(handValues[2])})";
+                    break;
+                case 3:
+                    if (handValues[1] != 6)
                     {
-                        handStrength.HandValue[i] = 0;
-                    }
-                }
-            }
-
-            // Check for Full House and Trips
-            foreach (Card card in inCards)
-            {
-                if (inCards.Count(c => c.Strength == card.Strength) == 3)
-                {
-                    if (inCards[0].Strength == inCards[1].Strength && inCards[0].Strength != card.Strength ||
-                        inCards[3].Strength == inCards[4].Strength && inCards[3].Strength != card.Strength)
-                    {
-                        handStrength.HandValue[0] = FULL_HOUSE;
-                        handStrength.HandValue[1] = card.Strength;
-                        if (inCards[1].Strength < inCards[2].Strength)
-                        {
-                            handStrength.HandValue[2] = inCards[1].Strength;
-                        }
-                        else
-                        {
-                            handStrength.HandValue[2] = inCards[3].Strength;
-                        }
-                        for (int i = 3; i < 6; i++)
-                        {
-                            handStrength.HandValue[i] = 0;
-                        }
+                        handName = $"Three of a Kind\n({highCard}s)";
                     }
                     else
                     {
-                        handStrength.HandValue[0] = TRIPS;
-                        handStrength.HandValue[1] = card.Strength;
-                        inCards.RemoveAll(c => c.Strength == card.Strength);
-                        handStrength.HandValue[2] = inCards[1].Strength;
-                        handStrength.HandValue[3] = inCards[0].Strength;
-                        for (int i = 4; i < 6; i++)
-                        {
-                            handStrength.HandValue[i] = 0;
-                        }
+                        handName = $"Three of a Kind\n({highCard}es)";
                     }
-                    return handStrength;
-                }
-            }
-
-            // Check for two pair
-            if (inCards[0].Strength == inCards[1].Strength)
-            {
-                if (inCards[2].Strength == inCards[3].Strength)
-                {
-                    handStrength.HandValue[0] = TWO_PAIR;
-                    handStrength.HandValue[1] = inCards[2].Strength;
-                    handStrength.HandValue[2] = inCards[0].Strength;
-                    handStrength.HandValue[3] = inCards[4].Strength;
-                }
-                else if (inCards[3].Strength == inCards[4].Strength)
-                {
-                    handStrength.HandValue[0] = TWO_PAIR;
-                    handStrength.HandValue[1] = inCards[3].Strength;
-                    handStrength.HandValue[2] = inCards[0].Strength;
-                    handStrength.HandValue[3] = inCards[2].Strength;
-                }
-                for (int i = 4; i < 6; i++)
-                {
-                    handStrength.HandValue[i] = 0;
-                }
-            }
-            if (inCards[1].Strength == inCards[2].Strength &&
-                inCards[3].Strength == inCards[4].Strength)
-            {
-                handStrength.HandValue[0] = TWO_PAIR;
-                handStrength.HandValue[1] = inCards[3].Strength;
-                handStrength.HandValue[2] = inCards[1].Strength;
-                handStrength.HandValue[3] = inCards[0].Strength;
-                for (int i = 4; i < 6; i++)
-                {
-                    handStrength.HandValue[i] = 0;
-                }
-            }
-
-            // Check for one pair
-            foreach (Card card in inCards)
-            {
-                if (inCards.Count(c => c.Strength == card.Strength) == 2)
-                {
-                    handStrength.HandValue[0] = ONE_PAIR;
-                    handStrength.HandValue[1] = card.Strength;
-                    inCards.RemoveAll(c => c.Strength == card.Strength);
-                    handStrength.HandValue[2] = inCards[2].Strength;
-                    handStrength.HandValue[3] = inCards[1].Strength;
-                    handStrength.HandValue[4] = inCards[0].Strength;
-                    handStrength.HandValue[5] = 0;
-                    return handStrength;
-                }
-            }
-
-            // if no other hands were found, set the high card values
-            handStrength.HandValue[0] = HIGH_CARD;
-            for (int i = 0; i < inCards.Count; i++)
-            {
-                handStrength.HandValue[inCards.Count - i] = inCards[i].Strength;
-            }
-
-            return handStrength;
-        }
-
-        /// <summary>
-        /// Consumes a list of five cards and returns true if they are all the same suit (flush).
-        /// </summary>
-        /// <param name="inCards">List of five cards</param>
-        /// <returns>True if all cards are the same suit, otherwise false.</returns>
-        private static bool IsFlush(List<Card> inCards)
-        {
-            // Check for flush
-            int numOfSuit = 0;
-            foreach (Card c in inCards)
-            {
-                if (c.Suit == inCards[0].Suit)
-                {
-                    numOfSuit++;
-                }
-            }
-            if (numOfSuit >= 5)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Consumes a list of five cards (sorted weakest to strongest) and returns true if there is a straight.
-        /// </summary>
-        /// <param name="inCards"></param>
-        /// <returns></returns>
-        private static bool IsStraight(List<Card> inCards)
-        { 
-
-            if (inCards.Count == 5)
-            {
-                int firstCard = inCards[0].Strength;
-
-                if (inCards[1].Strength == firstCard + 1 &&
-                    inCards[2].Strength == firstCard + 2 &&
-                    inCards[3].Strength == firstCard + 3)
-                {
-                    if (inCards[4].Strength == firstCard + 4 ||
-                        inCards[4].Strength == firstCard + 12)
+                    break;
+                case 4:
+                    handName = $"Straight ({highCard} high)";
+                    break;
+                case 5:
+                    handName = $"Flush ({highCard} high)";
+                    break;
+                case 6:
+                    handName = $"Full House\n({highCard} full of {CardName(handValues[2])})";
+                    break;
+                case 7:
+                    handName = $"Four of a Kind\n({highCard})";
+                    break;
+                case 8:
+                    if (highCard == "Ace")
                     {
-                        return true;
+                        handName = "Royal Flush";
                     }
-                }
+                    else
+                    {
+                        handName = $"Straigh Flush\n({highCard} high)";
+                    }
+                    break;
+                default:
+                    break;
             }
 
-            return false;
+            return handName;
+        }
+
+        private static string CardName(int strength)
+        {
+            string cardName = "";
+            switch (strength)
+            {
+                case 2:
+                    cardName = "Two";
+                    break;
+                case 3:
+                    cardName = "Three";
+                    break;
+                case 4:
+                    cardName = "Four";
+                    break;
+                case 5:
+                    cardName = "Five";
+                    break;
+                case 6:
+                    cardName = "Six";
+                    break;
+                case 7:
+                    cardName = "Seven";
+                    break;
+                case 8:
+                    cardName = "Eight";
+                    break;
+                case 9:
+                    cardName = "Nine";
+                    break;
+                case 10:
+                    cardName = "Ten";
+                    break;
+                case 11:
+                    cardName = "Jack";
+                    break;
+                case 12:
+                    cardName = "Queen";
+                    break;
+                case 13:
+                    cardName = "King";
+                    break;
+                case 14:
+                    cardName = "Ace";
+                    break;
+                default:
+                    break;
+            }
+            return cardName;
         }
 
     }
