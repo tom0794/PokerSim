@@ -3,6 +3,8 @@
 Notes
 - Add controls for calculating win probabilities, dealing random community cards, and resetting program
 - Add runout calculation
+- Add hand name calculator
+- Add hand comparison method
 
 Future Features
 - Calculate and list outs
