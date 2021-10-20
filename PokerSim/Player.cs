@@ -173,6 +173,8 @@ namespace PokerSim
             btnRemovePlayer.Visible = false;
             lblProbability.Visible = false;
             lblHandName.Visible = false;
+            lblProbability.Text = "";
+            lblHandName.Text = "";
             this.Active = false;
             if (PlayerCard1.Image != Form.cardBack)
             {
