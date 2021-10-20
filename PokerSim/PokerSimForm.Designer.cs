@@ -37,6 +37,8 @@ namespace PokerSim
             this.btnTestStrength = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.RichTextBox();
             this.btnDealRandom = new System.Windows.Forms.Button();
+            this.btnGetOdds = new System.Windows.Forms.Button();
+            this.btnTestCompare = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // pnlPlayers
@@ -86,7 +88,7 @@ namespace PokerSim
             // 
             // btnTestStrength
             // 
-            this.btnTestStrength.Location = new System.Drawing.Point(801, 385);
+            this.btnTestStrength.Location = new System.Drawing.Point(800, 328);
             this.btnTestStrength.Name = "btnTestStrength";
             this.btnTestStrength.Size = new System.Drawing.Size(96, 39);
             this.btnTestStrength.TabIndex = 5;
@@ -112,12 +114,34 @@ namespace PokerSim
             this.btnDealRandom.UseVisualStyleBackColor = true;
             this.btnDealRandom.Click += new System.EventHandler(this.btnDealRandom_Click);
             // 
+            // btnGetOdds
+            // 
+            this.btnGetOdds.Location = new System.Drawing.Point(800, 401);
+            this.btnGetOdds.Name = "btnGetOdds";
+            this.btnGetOdds.Size = new System.Drawing.Size(175, 23);
+            this.btnGetOdds.TabIndex = 8;
+            this.btnGetOdds.Text = "Get probability";
+            this.btnGetOdds.UseVisualStyleBackColor = true;
+            this.btnGetOdds.Click += new System.EventHandler(this.btnGetOdds_Click);
+            // 
+            // btnTestCompare
+            // 
+            this.btnTestCompare.Location = new System.Drawing.Point(923, 333);
+            this.btnTestCompare.Name = "btnTestCompare";
+            this.btnTestCompare.Size = new System.Drawing.Size(99, 33);
+            this.btnTestCompare.TabIndex = 9;
+            this.btnTestCompare.Text = "button1";
+            this.btnTestCompare.UseVisualStyleBackColor = true;
+            this.btnTestCompare.Click += new System.EventHandler(this.btnTestCompare_Click);
+            // 
             // PokerSimForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1035, 625);
+            this.Controls.Add(this.btnTestCompare);
+            this.Controls.Add(this.btnGetOdds);
             this.Controls.Add(this.btnDealRandom);
             this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.btnTestStrength);
@@ -143,6 +167,8 @@ namespace PokerSim
         private System.Windows.Forms.Button btnTestStrength;
         private System.Windows.Forms.RichTextBox txtOutput;
         private System.Windows.Forms.Button btnDealRandom;
+        private System.Windows.Forms.Button btnGetOdds;
+        private System.Windows.Forms.Button btnTestCompare;
     }
 }
 

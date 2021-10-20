@@ -140,6 +140,9 @@ namespace PokerSim
             PlayerCard1.CardId = Form.deck[cardIndex].CardId;
             PlayerCard1.Suit = Form.deck[cardIndex].Suit;
             PlayerCard1.Strength = Form.deck[cardIndex].Strength;
+            PlayerCard1.LightVersion = new LightCard();
+            PlayerCard1.LightVersion.Suit = Form.deck[cardIndex].Suit;
+            PlayerCard1.LightVersion.Strength = Form.deck[cardIndex].Strength;
             PlayerCard1.Type = Form.deck[cardIndex].Type;
             PlayerCard1.LongName = Form.deck[cardIndex].LongName;
             PlayerCard1.ShortName = Form.deck[cardIndex].ShortName;
@@ -152,6 +155,9 @@ namespace PokerSim
             PlayerCard2.CardId = Form.deck[cardIndex].CardId;
             PlayerCard2.Suit = Form.deck[cardIndex].Suit;
             PlayerCard2.Strength = Form.deck[cardIndex].Strength;
+            PlayerCard2.LightVersion = new LightCard();
+            PlayerCard2.LightVersion.Suit = Form.deck[cardIndex].Suit;
+            PlayerCard2.LightVersion.Strength = Form.deck[cardIndex].Strength;
             PlayerCard2.Type = Form.deck[cardIndex].Type;
             PlayerCard2.LongName = Form.deck[cardIndex].LongName;
             PlayerCard2.ShortName = Form.deck[cardIndex].ShortName;

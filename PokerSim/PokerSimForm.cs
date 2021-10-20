@@ -102,7 +102,7 @@ namespace PokerSim
                     {
                         Card addBack = new Card();
                         UpdateCard(ref addBack, (Card)c);
-                        deck.Add(addBack); 
+                        deck.Add(addBack);
                     }
                 }
             }
@@ -204,11 +204,86 @@ namespace PokerSim
             newCard.CardId = sourceCard.CardId;
             newCard.Suit = sourceCard.Suit;
             newCard.Strength = sourceCard.Strength;
+            newCard.LightVersion = new LightCard();
+            newCard.LightVersion.Suit = sourceCard.Suit;
+            newCard.LightVersion.Strength = sourceCard.Strength;
             newCard.Type = sourceCard.Type;
             newCard.LongName = sourceCard.LongName;
             newCard.ShortName = sourceCard.ShortName;
             newCard.ImageName = sourceCard.ImageName;
         }
+
+        private void SetHandNames()
+        {
+            communityCards.Clear();
+            foreach (Control ctr in pnlCommunity.Controls)
+            {
+                if (ctr is Card)
+                {
+                    Card commCard = (Card)ctr;
+                    if (commCard.Image != cardBack)
+                    {
+                        communityCards.Add(commCard);
+                    }
+                }
+            }
+            List<LightCard> lightCommCards = new List<LightCard>(5);
+            foreach (Card c in communityCards)
+            {
+                lightCommCards.Add(c.LightVersion);
+            }
+            foreach (Player p in activePlayers)
+            {
+                List<LightCard> playerCards = new List<LightCard>();
+                playerCards.Add(p.PlayerCard1.LightVersion);
+                playerCards.Add(p.PlayerCard2.LightVersion);
+                foreach (LightCard lc in lightCommCards)
+                {
+                    playerCards.Add(lc);
+                }
+                if (playerCards.Count >= 5)
+                {
+                    HandStrength handStrength = HandStrength.GetHandStrength(playerCards.OrderBy(c => c.Strength).ToList());
+                    p.lblHandName.Text = HandStrength.HandName(handStrength.HandValue);
+                }
+            }
+        }
+
+        private bool IncrementIndices(ref int[] indices, int listSize)
+        {
+            // return false when either an invalid sequence is given or when it can no longer be incremented
+            if (indices[0] == listSize - indices.Length)
+            {
+                return false;
+            }
+            else
+            {
+                int finalPosition = listSize - 1;
+                for (int i = indices.Length - 1; i >= 0; i--)
+                {
+                    if (indices[i] < finalPosition)
+                    {
+                        indices[i]++;
+                        // reset everything after and reset final position
+                        if (i != indices.Length - 1)
+                        {
+                            for (int j = i + 1; j < indices.Length; j++)
+                            {
+                                indices[j] = indices[j - 1] + 1;
+                            }
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        finalPosition--;
+                    }
+                }
+                return false;
+            }
+        }
+
+        #region Card Click Events
 
         private void MenuCard_Click(object sender, EventArgs e)
         {
@@ -245,6 +320,10 @@ namespace PokerSim
             }
         }
 
+        #endregion
+
+        #region Buttons
+
         private void btnClearCommCards_Click(object sender, EventArgs e)
         {
             ClearCommunityCards();
@@ -270,11 +349,16 @@ namespace PokerSim
                     }
                 }
             }
-            if (communityCards.Count == 5 && activePlayers.Count >= 1)
+            if (communityCards.Count >= 3 && activePlayers.Count >= 1)
             {
                 communityCards.Add(activePlayers[0].PlayerCard1);
                 communityCards.Add(activePlayers[0].PlayerCard2);
-                HandStrength handStrength = HandStrength.GetHandStrength(communityCards.OrderBy(c => c.Strength).ToList());
+                List<LightCard> lightCards = new List<LightCard>();
+                foreach (Card c in communityCards)
+                {
+                    lightCards.Add(new LightCard(c.Suit, c.Strength));
+                }
+                HandStrength handStrength = HandStrength.GetHandStrength(lightCards.OrderBy(c => c.Strength).ToList());
                 foreach (int i in handStrength.HandValue)
                 {
                     txtOutput.Text += i + "\n";
@@ -291,7 +375,7 @@ namespace PokerSim
                 for (int i = 0; i < 3; i++)
                 {
                     int index = r.Next(0, deck.Count - 1);
-                    
+
                     if (pnlCommunity.Controls[i] is Card)
                     {
                         Card commCard = (Card)pnlCommunity.Controls[i];
@@ -301,6 +385,9 @@ namespace PokerSim
                             commCard.CardId = deck[index].CardId;
                             commCard.Suit = deck[index].Suit;
                             commCard.Strength = deck[index].Strength;
+                            commCard.LightVersion = new LightCard();
+                            commCard.LightVersion.Suit = deck[index].Suit;
+                            commCard.LightVersion.Strength = deck[index].Strength;
                             commCard.Type = deck[index].Type;
                             commCard.LongName = deck[index].LongName;
                             commCard.ShortName = deck[index].ShortName;
@@ -308,7 +395,7 @@ namespace PokerSim
                             communityCards.Add(commCard);
                             deck.Remove(deck[index]);
                         }
-                    }                   
+                    }
                 }
                 btnDealRandom.Text = "Deal Random Turn";
                 return;
@@ -328,6 +415,9 @@ namespace PokerSim
                         commCard.CardId = deck[index].CardId;
                         commCard.Suit = deck[index].Suit;
                         commCard.Strength = deck[index].Strength;
+                        commCard.LightVersion = new LightCard();
+                        commCard.LightVersion.Suit = deck[index].Suit;
+                        commCard.LightVersion.Strength = deck[index].Strength;
                         commCard.Type = deck[index].Type;
                         commCard.LongName = deck[index].LongName;
                         commCard.ShortName = deck[index].ShortName;
@@ -354,6 +444,9 @@ namespace PokerSim
                         commCard.CardId = deck[index].CardId;
                         commCard.Suit = deck[index].Suit;
                         commCard.Strength = deck[index].Strength;
+                        commCard.LightVersion = new LightCard();
+                        commCard.LightVersion.Suit = deck[index].Suit;
+                        commCard.LightVersion.Strength = deck[index].Strength;
                         commCard.Type = deck[index].Type;
                         commCard.LongName = deck[index].LongName;
                         commCard.ShortName = deck[index].ShortName;
@@ -364,6 +457,115 @@ namespace PokerSim
                 }
                 btnDealRandom.Text = "Deal Random Flop";
             }
+        }
+
+        #endregion
+
+        private void btnGetOdds_Click(object sender, EventArgs e)
+        {
+            communityCards.Clear();
+            foreach (Control ctr in pnlCommunity.Controls)
+            {
+                if (ctr is Card)
+                {
+                    Card commCard = (Card)ctr;
+                    if (commCard.Image != cardBack)
+                    {
+                        communityCards.Add(commCard);
+                    }
+                }
+            }
+            List<LightCard> lightCommCards = new List<LightCard>(5);
+            foreach (Card c in communityCards)
+            {
+                lightCommCards.Add(c.LightVersion);
+            }
+            if (lightCommCards.Count == 5)
+            {
+                SetHandNames();
+                return;
+            }
+
+            List<LightCard> lightDeck = new List<LightCard>(48);
+            foreach (Card c in deck)
+            {
+                lightDeck.Add(c.LightVersion);
+            }
+
+            int[] deckIndices = new int[5 - communityCards.Count()];
+            for (int i = 0; i < deckIndices.Length; i++)
+            {
+                deckIndices[i] = i;
+            }
+
+            // set up player win counts
+            int[] playerWins = new int[activePlayers.Count];
+            //for (int i = 0; i < playerWins.Length; i++)
+            //{
+            //    playerWins[i] = 0;
+            //}
+            int totalRunouts = 0;
+
+            //List<LightCard> playerHand = new List<LightCard>();
+            //List<LightCard> currentHand = new List<LightCard>();
+
+            do
+            {
+                int winningPlayerIndex = -1;
+                int[] strongestHand = new int[6];
+                strongestHand[0] = -1;
+                for (int i = 0; i < activePlayers.Count; i++)
+                {
+                    List<LightCard> currentHand = new List<LightCard>(7);
+                    //currentHand.Clear();
+                    currentHand.Add(activePlayers[i].PlayerCard1.LightVersion);
+                    currentHand.Add(activePlayers[i].PlayerCard2.LightVersion);
+                    foreach (LightCard lc in lightCommCards)
+                    {
+                        currentHand.Add(lc);
+                    }
+                    for (int j = 0; j < deckIndices.Length; j++)
+                    {
+                        currentHand.Add(lightDeck[deckIndices[j]]);
+                    }
+                    int[] currentHandStrength = HandStrength.GetHandStrength(currentHand.OrderBy(c => c.Strength).ToList()).HandValue;
+                    if (HandStrength.CompareHands(currentHandStrength, strongestHand) == 1 || strongestHand[0] == -1)
+                    {
+                        for (int k = 0; k < strongestHand.Length; k++)
+                        {
+                            int temp = currentHandStrength[k];
+                            strongestHand[k] = temp;
+                            //strongestHand[k] = currentHandStrength[k];
+                        }
+                        winningPlayerIndex = i;
+                    }
+                    else if (HandStrength.CompareHands(currentHandStrength, strongestHand) == 0)
+                    {
+                        winningPlayerIndex = -1;
+                    }
+
+                }
+                if (winningPlayerIndex != -1)
+                {
+                    playerWins[winningPlayerIndex]++;
+                }
+                totalRunouts++;
+            } while (IncrementIndices(ref deckIndices, deck.Count) && totalRunouts < 100000);
+            txtOutput.Text = $"Total runouts: {totalRunouts} \n 1: {playerWins[0]} 2: {playerWins[1]}";
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                activePlayers[i].lblProbability.Text = ((double)playerWins[i] / totalRunouts).ToString("p");
+            }
+            SetHandNames();
+        }
+
+        private void btnTestCompare_Click(object sender, EventArgs e)
+        {
+            int[] hand1 = { 5, 5, 0, 0, 0, 0 };
+            int[] hand2 = { 4, 6, 0, 0, 0, 0 };
+
+            txtOutput.Text = HandStrength.CompareHands(hand1, hand2).ToString();
+
         }
     }
 }

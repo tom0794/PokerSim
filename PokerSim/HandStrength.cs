@@ -24,7 +24,7 @@ namespace PokerSim
         private const int ONE_PAIR = 1;
         private const int HIGH_CARD = 0;
 
-        public static HandStrength GetHandStrength(List<Card> inCards)
+        public static HandStrength GetHandStrength(List<LightCard> inCards)
         {
             HandStrength handStrength = new HandStrength();
             handStrength.HandValue = new int[6];
@@ -58,8 +58,8 @@ namespace PokerSim
             // If a straight is found, sets the handStrength hand values and returns true
             bool IsStraight(int strength)
             {
-                List<Card> noDupes = new List<Card>();
-                foreach (Card card in inCards)
+                List<LightCard> noDupes = new List<LightCard>();
+                foreach (LightCard card in inCards)
                 {
                     if (noDupes.Count(c => c.Strength == card.Strength) == 0)
                     {
@@ -102,10 +102,10 @@ namespace PokerSim
 
             // Check for and store quads, trips and pairs
             Card quadCard = new Card();
-            List<Card> tripsCards = new List<Card>();
-            List<Card> pairCards = new List<Card>();
+            List<LightCard> tripsCards = new List<LightCard>();
+            List<LightCard> pairCards = new List<LightCard>();
 
-            foreach (Card card in inCards)
+            foreach (LightCard card in inCards)
             {
                 if (inCards.Count(c => c.Strength == card.Strength) == 4)
                 {
@@ -113,7 +113,7 @@ namespace PokerSim
                 }
                 else if (inCards.Count(c => c.Strength == card.Strength) == 3)
                 {
-                    Card tripCard = new Card();
+                    LightCard tripCard = new LightCard();
                     tripCard.Strength = card.Strength;
                     if (tripsCards.Count == 1 && tripsCards[0].Strength != tripCard.Strength || tripsCards.Count == 0)
                     {
@@ -122,7 +122,7 @@ namespace PokerSim
                 }
                 else if (inCards.Count(c => c.Strength == card.Strength) == 2)
                 {
-                    Card pairCard = new Card();
+                    LightCard pairCard = new LightCard();
                     pairCard.Strength = card.Strength;
                     if (pairCards.Count == 1 && pairCards[0].Strength != pairCard.Strength ||
                         pairCards.Count == 2 && pairCards[0].Strength != pairCard.Strength && pairCards[1].Strength != pairCard.Strength ||
@@ -204,6 +204,11 @@ namespace PokerSim
             return handStrength;
         }
         
+        /// <summary>
+        /// Consumes an array of integers and returns the name of the hand
+        /// </summary>
+        /// <param name="handValues"></param>
+        /// <returns></returns>
         public static string HandName(int[] handValues)
         {
             string handName = "";
@@ -217,7 +222,7 @@ namespace PokerSim
                 case 1:
                     if (handValues[1] != 6)
                     {
-                        handName = $"Pair of{highCard}s";
+                        handName = $"Pair of {highCard}s";
                     }
                     else
                     {
@@ -266,6 +271,11 @@ namespace PokerSim
             return handName;
         }
 
+        /// <summary>
+        /// Consumes an integer representing a card's strength and returns the string name of the card
+        /// </summary>
+        /// <param name="strength"></param>
+        /// <returns></returns>
         private static string CardName(int strength)
         {
             string cardName = "";
@@ -316,5 +326,20 @@ namespace PokerSim
             return cardName;
         }
 
+        public static int CompareHands(int[] hand, int[] opponent)
+        {
+            for (int i = 0; i < hand.Length; i++)
+            {
+                if (hand[i] > opponent[i])
+                {
+                    return 1;
+                }
+                else if (hand[i] < opponent[i])
+                {
+                    return -1;
+                }
+            }
+            return 0;
+        }
     }
 }

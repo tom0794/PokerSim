@@ -18,6 +18,8 @@ namespace PokerSim
         public string LongName { get; set; }
         public string ShortName { get; set; }
 
+        public LightCard LightVersion { get; set; }
+
         private const int DECK_SIZE = 52;
 
         public Card()
@@ -65,6 +67,9 @@ namespace PokerSim
                 newCard.CardId = i;
                 newCard.Suit = suitNumber;
                 newCard.Strength = numAddedOfCurrentSuit + 2;
+                newCard.LightVersion = new LightCard();
+                newCard.LightVersion.Suit = suitNumber;
+                newCard.LightVersion.Strength = numAddedOfCurrentSuit + 2;
                 newCard.Type = cardNames[numAddedOfCurrentSuit];
                 newCard.LongName = newCard.Type + " of " + suits[newCard.Suit];
                 newCard.ShortName = cardShort[numAddedOfCurrentSuit] + suits[newCard.Suit][0];
