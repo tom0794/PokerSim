@@ -24,10 +24,10 @@ namespace PokerSim
         private const int ONE_PAIR = 1;
         private const int HIGH_CARD = 0;
 
-        public static HandStrength GetHandStrength(List<LightCard> inCards)
+        public static int[] GetHandStrength(List<LightCard> inCards)
         {
-            HandStrength handStrength = new HandStrength();
-            handStrength.HandValue = new int[6];
+            inCards = inCards.OrderBy(c => c.Strength).ToList();
+            int[] handStrength = new int[6];
 
             // Straight Flush and Flush Check
             for (int i = 0; i < 3; i++)
@@ -41,10 +41,10 @@ namespace PokerSim
                         return handStrength;
                     }
 
-                    handStrength.HandValue[0] = FLUSH;
+                    handStrength[0] = FLUSH;
                     for (int j = 1; j < 6; j++)
                     {
-                        handStrength.HandValue[j] = inCards[inCards.Count - j].Strength;
+                        handStrength[j] = inCards[inCards.Count - j].Strength;
                     }
                     return handStrength;
                 }
@@ -73,11 +73,11 @@ namespace PokerSim
                         noDupes[k].Strength == noDupes[k + 3].Strength - 3 &&
                         noDupes[k].Strength == noDupes[k + 4].Strength - 4)
                     {
-                        handStrength.HandValue[0] = strength;
-                        handStrength.HandValue[1] = noDupes[k + 4].Strength;
+                        handStrength[0] = strength;
+                        handStrength[1] = noDupes[k + 4].Strength;
                         for (int j = 2; j < 6; j++)
                         {
-                            handStrength.HandValue[j] = 0;
+                            handStrength[j] = 0;
                         }
                         return true;
                     }
@@ -89,11 +89,11 @@ namespace PokerSim
                     noDupes.Count(c => c.Strength == 5) >= 1 &&
                     noDupes.Count(c => c.Strength == 14) >= 1)
                 {
-                    handStrength.HandValue[0] = strength;
-                    handStrength.HandValue[1] = 5;
+                    handStrength[0] = strength;
+                    handStrength[1] = 5;
                     for (int j = 2; j < 6; j++)
                     {
-                        handStrength.HandValue[j] = 0;
+                        handStrength[j] = 0;
                     }
                     return true;
                 }
@@ -137,24 +137,24 @@ namespace PokerSim
             if (quadCard.Strength != 0)
             {
                 inCards.RemoveAll(c => c.Strength == quadCard.Strength);
-                handStrength.HandValue[0] = QUADS;
-                handStrength.HandValue[1] = quadCard.Strength;
-                handStrength.HandValue[2] = inCards[inCards.Count - 1].Strength;
+                handStrength[0] = QUADS;
+                handStrength[1] = quadCard.Strength;
+                handStrength[2] = inCards[inCards.Count - 1].Strength;
                 return handStrength;
             }
 
             // Check for full house
             if (tripsCards.Count == 1 && pairCards.Count >= 1 || tripsCards.Count == 2)
             {
-                handStrength.HandValue[0] = FULL_HOUSE;
-                handStrength.HandValue[1] = tripsCards[tripsCards.Count - 1].Strength;
+                handStrength[0] = FULL_HOUSE;
+                handStrength[1] = tripsCards[tripsCards.Count - 1].Strength;
                 if (pairCards.Count >= 1)
                 {
-                    handStrength.HandValue[2] = pairCards[pairCards.Count - 1].Strength;
+                    handStrength[2] = pairCards[pairCards.Count - 1].Strength;
                 }
                 else
                 {
-                    handStrength.HandValue[2] = tripsCards[tripsCards.Count - 2].Strength;
+                    handStrength[2] = tripsCards[tripsCards.Count - 2].Strength;
                 }
                 return handStrength;
             }
@@ -162,43 +162,43 @@ namespace PokerSim
             // Check for trips
             if (tripsCards.Count == 1)
             {
-                handStrength.HandValue[0] = TRIPS;
+                handStrength[0] = TRIPS;
                 inCards.RemoveAll(c => c.Strength == tripsCards[0].Strength);
-                handStrength.HandValue[1] = tripsCards[0].Strength;
-                handStrength.HandValue[2] = inCards[inCards.Count - 1].Strength;
-                handStrength.HandValue[3] = inCards[inCards.Count - 2].Strength;
+                handStrength[1] = tripsCards[0].Strength;
+                handStrength[2] = inCards[inCards.Count - 1].Strength;
+                handStrength[3] = inCards[inCards.Count - 2].Strength;
                 return handStrength;
             }
 
             // check for two pair
             if (pairCards.Count >= 2)
             {
-                handStrength.HandValue[0] = TWO_PAIR;
-                handStrength.HandValue[1] = pairCards[pairCards.Count - 1].Strength;
-                handStrength.HandValue[2] = pairCards[pairCards.Count - 2].Strength;
+                handStrength[0] = TWO_PAIR;
+                handStrength[1] = pairCards[pairCards.Count - 1].Strength;
+                handStrength[2] = pairCards[pairCards.Count - 2].Strength;
                 inCards.RemoveAll(c => c.Strength == pairCards[pairCards.Count - 1].Strength || c.Strength == pairCards[pairCards.Count - 2].Strength);
-                handStrength.HandValue[3] = inCards[2].Strength;
+                handStrength[3] = inCards[inCards.Count - 1].Strength;
                 return handStrength;
             }
 
             // check for one pair
             if (pairCards.Count == 1)
             {
-                handStrength.HandValue[0] = ONE_PAIR;
-                handStrength.HandValue[1] = pairCards[0].Strength;
+                handStrength[0] = ONE_PAIR;
+                handStrength[1] = pairCards[0].Strength;
                 inCards.RemoveAll(c => c.Strength == pairCards[0].Strength);
                 for (int j = 2; j < 5; j++)
                 {
-                    handStrength.HandValue[j] = inCards[inCards.Count - j + 1].Strength;
+                    handStrength[j] = inCards[inCards.Count - j + 1].Strength;
                 }
                 return handStrength;
             }
 
             // set high card
-            handStrength.HandValue[0] = HIGH_CARD;
+            handStrength[0] = HIGH_CARD;
             for (int i = 1; i < 6; i++)
             {
-                handStrength.HandValue[i] = inCards[inCards.Count - i].Strength;
+                handStrength[i] = inCards[inCards.Count - i].Strength;
             }
 
             return handStrength;

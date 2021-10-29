@@ -243,8 +243,8 @@ namespace PokerSim
                 }
                 if (playerCards.Count >= 5)
                 {
-                    HandStrength handStrength = HandStrength.GetHandStrength(playerCards.OrderBy(c => c.Strength).ToList());
-                    p.lblHandName.Text = HandStrength.HandName(handStrength.HandValue);
+                    int[] handStrength = HandStrength.GetHandStrength(playerCards.OrderBy(c => c.Strength).ToList());
+                    p.lblHandName.Text = HandStrength.HandName(handStrength);
                 }
             }
         }
@@ -252,7 +252,7 @@ namespace PokerSim
         private bool IncrementIndices(ref int[] indices, int listSize)
         {
             // return false when either an invalid sequence is given or when it can no longer be incremented
-            if (indices[0] == listSize - indices.Length)
+            if (indices.Length == 0 || indices[0] == listSize - indices.Length)
             {
                 return false;
             }
@@ -358,12 +358,12 @@ namespace PokerSim
                 {
                     lightCards.Add(new LightCard(c.Suit, c.Strength));
                 }
-                HandStrength handStrength = HandStrength.GetHandStrength(lightCards.OrderBy(c => c.Strength).ToList());
-                foreach (int i in handStrength.HandValue)
+                int[] handStrength = HandStrength.GetHandStrength(lightCards.OrderBy(c => c.Strength).ToList());
+                foreach (int i in handStrength)
                 {
                     txtOutput.Text += i + "\n";
                 }
-                activePlayers[0].lblHandName.Text = HandStrength.HandName(handStrength.HandValue);
+                activePlayers[0].lblHandName.Text = HandStrength.HandName(handStrength);
             }
         }
 
@@ -398,6 +398,7 @@ namespace PokerSim
                     }
                 }
                 btnDealRandom.Text = "Deal Random Turn";
+                GetHandOdds();
                 return;
             }
 
@@ -427,6 +428,7 @@ namespace PokerSim
                     }
                 }
                 btnDealRandom.Text = "Deal Random River";
+                GetHandOdds();
                 return;
             }
 
@@ -456,12 +458,18 @@ namespace PokerSim
                     }
                 }
                 btnDealRandom.Text = "Deal Random Flop";
+                GetHandOdds();
             }
         }
 
         #endregion
 
         private void btnGetOdds_Click(object sender, EventArgs e)
+        {
+            GetHandOdds();
+        }
+
+        private void GetHandOdds()
         {
             communityCards.Clear();
             foreach (Control ctr in pnlCommunity.Controls)
@@ -479,11 +487,6 @@ namespace PokerSim
             foreach (Card c in communityCards)
             {
                 lightCommCards.Add(c.LightVersion);
-            }
-            if (lightCommCards.Count == 5)
-            {
-                SetHandNames();
-                return;
             }
 
             List<LightCard> lightDeck = new List<LightCard>(48);
@@ -528,7 +531,7 @@ namespace PokerSim
                     {
                         currentHand.Add(lightDeck[deckIndices[j]]);
                     }
-                    int[] currentHandStrength = HandStrength.GetHandStrength(currentHand.OrderBy(c => c.Strength).ToList()).HandValue;
+                    int[] currentHandStrength = HandStrength.GetHandStrength(currentHand.OrderBy(c => c.Strength).ToList());
                     if (HandStrength.CompareHands(currentHandStrength, strongestHand) == 1 || strongestHand[0] == -1)
                     {
                         for (int k = 0; k < strongestHand.Length; k++)
@@ -543,29 +546,19 @@ namespace PokerSim
                     {
                         winningPlayerIndex = -1;
                     }
-
                 }
                 if (winningPlayerIndex != -1)
                 {
                     playerWins[winningPlayerIndex]++;
                 }
                 totalRunouts++;
-            } while (IncrementIndices(ref deckIndices, deck.Count) && totalRunouts < 100000);
+            } while (IncrementIndices(ref deckIndices, deck.Count) && totalRunouts < 500000);
             txtOutput.Text = $"Total runouts: {totalRunouts} \n 1: {playerWins[0]} 2: {playerWins[1]}";
             for (int i = 0; i < activePlayers.Count; i++)
             {
                 activePlayers[i].lblProbability.Text = ((double)playerWins[i] / totalRunouts).ToString("p");
             }
             SetHandNames();
-        }
-
-        private void btnTestCompare_Click(object sender, EventArgs e)
-        {
-            int[] hand1 = { 5, 5, 0, 0, 0, 0 };
-            int[] hand2 = { 4, 6, 0, 0, 0, 0 };
-
-            txtOutput.Text = HandStrength.CompareHands(hand1, hand2).ToString();
-
         }
     }
 }
